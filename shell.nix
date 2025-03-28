@@ -17,6 +17,7 @@
 
     pomodoro
     mani
+    zellij
 
     # wd.${system}.default
     # wd

@@ -16,7 +16,6 @@ in {
   home.packages = with pkgs; [
     fira
     wd.defaultPackage.${system}
-    helix
 
     # lens
     # # Adds the 'hello' command to your environment. It prints a friendly
@@ -76,7 +75,7 @@ in {
 
   # wayland.windowManager.sway.enable = true;
 
-  imports = [ ./shell.nix ./wezterm.nix ./sway.nix ./editor.nix ./code.nix ];
+  imports = [ ./shell.nix ./wezterm.nix ./sway.nix ./helix.nix ./code.nix ];
 
   qt = {
     enable = true;

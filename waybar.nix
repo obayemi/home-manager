@@ -108,7 +108,7 @@
         };
         "mpris" = {
           "format" = "{player_icon} {dynamic}";
-          "format-paused" = "{status_icon} <i>{dynamic}</i>";
+          "format-paused" = "{status_icon} <i>{title}</i>";
           "player-icons" = {
             "default" = "▶";
             "mpv" = "🎵";
@@ -176,9 +176,6 @@
           color: #c9545d;
           border-top: 2px solid #c9545d;
       }
-
-
-
 
       #mode {
           background: #64727D;
