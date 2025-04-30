@@ -1,9 +1,6 @@
-{config, pkgs, ...}:
-{
-  home.packages = with pkgs; [sway dmenu];
-  programs.swayr = {
-    enable = true;
-  };
+{ config, pkgs, ... }: {
+  home.packages = with pkgs; [ sway dmenu wob wdisplays ];
+  programs.swayr = { enable = true; };
   services.kanshi = {
     enable = true;
     settings = [
@@ -57,10 +54,10 @@
           }
         ];
       }
-    #   profile lan {
-    #     output 'AOC AG241QG4 0x00000151' enable position 0,0 mode 2560x1440
-    #     output eDP-1 scale 1.2 position 2560,0 mode 2256x1504
-    #   }
+      #   profile lan {
+      #     output 'AOC AG241QG4 0x00000151' enable position 0,0 mode 2560x1440
+      #     output eDP-1 scale 1.2 position 2560,0 mode 2256x1504
+      #   }
     ];
 
   };
@@ -73,16 +70,11 @@
       terminal = "wezterm";
       menu = "fuzzel --show-actions";
 
-      bars = [{
-        command = "waybar";
-      }];
+      bars = [{ command = "waybar"; }];
 
-      keybindings = {
-      };
+      keybindings = { };
 
-      focus = {
-        followMouse = false;
-      };
+      focus = { followMouse = false; };
       gaps = {
         inner = 3;
         smartBorders = "on";
@@ -185,10 +177,11 @@
       #
       exec kanshi
       exec_always kanshictl reload
-      
-      
+      exec playerctld
+
+
       ### Background stuff
-      
+
       exec pipewire
       exec /usr/libexec/xdg-desktop-portal --verbose -r
       # exec autotiling
@@ -197,11 +190,11 @@
       exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
       exec_always sh -c '$HOME/.local/bin/wallp'
       exec wl-paste --watch cliphist store
-      
+
       exec earlyoom -n --syslog -r 60
       exec swayrd
-      
-      
+
+
       ### Idle configuration
       #
       # Example configuration:
@@ -214,7 +207,7 @@
       # This will lock your screen after 300 seconds of inactivity, then turn off
       # your displays after another 300 seconds, and turn your screens back on when
       # resumed. It will also lock your screen before your computer goes to sleep.
-      
+
       ### Input configuration
       #
       # Example configuration:
@@ -228,7 +221,7 @@
       #
       # You can get the names of your inputs by running: swaymsg -t get_inputs
       # Read `man 5 sway-input` for more information about this section.
-      
+
       input "type:touchpad" {
         tap enabled
         tap_button_map lmr
@@ -236,19 +229,19 @@
         # natural_scroll enabled
         middle_emulation enabled
       }
-      
+
       # ,us(dvorak-alt-intl)
-      
+
       input "type:keyboard" {
               xkb_layout us(altgr-intl),us(dvorak-alt-intl)
               xkb_options caps:escape,grp:shifts_toggle
       }
-      
+
       # input "type:tablet_tool" {
       #   map_to_output 'LG Electronics LG ULTRAGEAR 104NTNH6V047'
       #   map_from_region 0.0x0.0 0.5x0.5
       # }
-      
+
       ### Key bindings
       #
       # Basics:
@@ -259,10 +252,10 @@
           # bindsym $mod+Shift+Return exec $term pwsh
           bindsym $mod+Shift+Return exec $term sh
           # bindsym $mod+Shift+Return exec $term
-      
+
           # Kill focused window
           bindsym $mod+Shift+q kill
-      
+
           # Start your launcher
           bindsym $mod+e           exec $menu
           bindsym $mod+Shift+e     exec "kickoff"
@@ -500,7 +493,5 @@
       include /etc/sway/config.d/*
     '';
   };
-  imports = [
-    ./waybar.nix
-  ];
+  imports = [ ./waybar.nix ];
 }

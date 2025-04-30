@@ -19,6 +19,10 @@
     mani
     zellij
 
+    graphqurl
+    glow
+    mdp
+
     # wd.${system}.default
     # wd
     # (pkgs.callPackage (pkgs.fetchFromGitHub {
@@ -28,6 +32,8 @@
     #   hash = "sha256-zVICpdu34MhPX9SWSp/Yx66jlsy/UAi8ssGiXMnQGcU=";
     # }) {})
   ];
+
+  home.shell.enableShellIntegration = true;
 
   home.sessionPath =
     [ "$HOME/.local/bin" "$HOME/.cargo/bin" "$HOME/.nix-profile/bin" ];
@@ -82,6 +88,7 @@
       jd = "jj diff";
       jjl = "jj log";
       jl = "jj l";
+      ls = "eza";
       l = "ls -l";
       ll = "ls -la";
       tree = "ls --tree";

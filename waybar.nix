@@ -108,7 +108,9 @@
         };
         "mpris" = {
           "format" = "{player_icon} {dynamic}";
-          "format-paused" = "{status_icon} <i>{title}</i>";
+          "interval" = 1;
+          "dynamic-len" = 60;
+          "dynamic-order" = [ "title" "position" "length" ];
           "player-icons" = {
             "default" = "▶";
             "mpv" = "🎵";

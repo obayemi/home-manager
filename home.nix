@@ -16,6 +16,10 @@ in {
   home.packages = with pkgs; [
     fira
     wd.defaultPackage.${system}
+    radare2
+    iaito
+    playerctl
+    # logseq
 
     # lens
     # # Adds the 'hello' command to your environment. It prints a friendly
@@ -68,7 +72,6 @@ in {
   #  /etc/profiles/per-user/obayemi/etc/profile.d/hm-session-vars.sh
   #
   #
-  home.shell.enableShellIntegration = true;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
