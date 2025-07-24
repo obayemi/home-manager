@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, system, ... }:
+{ inputs, config, pkgs, system, nixgl, ... }:
 let inherit (inputs) wd;
 in {
   home.username = "obayemi";
@@ -13,32 +13,9 @@ in {
   # release notes.
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
-  home.packages = with pkgs; [
-    fira
-    wd.defaultPackage.${system}
-    radare2
-    iaito
-    playerctl
-    # logseq
-
-    # lens
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ];
+  # flakes are hard :(
+  # TODO: find how to put that in ./shell.nix
+  home.packages = [ wd.defaultPackage.${system} ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -76,9 +53,24 @@ in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  nixGL.packages = nixgl.packages;
+  # nixGL.defaultWrapper = "mesa";
+  # nixGL.installScripts = [ "mesa" ];
+
   # wayland.windowManager.sway.enable = true;
 
-  imports = [ ./shell.nix ./wezterm.nix ./sway.nix ./helix.nix ./code.nix ];
+  imports = [
+    ./programs.nix
+    ./shell.nix
+    ./terminal-emulators.nix
+    ./wm.nix
+    ./sway.nix
+    ./hyprland.nix
+    ./waybar.nix
+    ./kanshi.nix
+    ./helix.nix
+    ./code.nix
+  ];
 
   qt = {
     enable = true;
@@ -90,5 +82,5 @@ in {
   };
 
   xdg.enable = true;
-
+  xdg.portal.config.common.default = "*";
 }

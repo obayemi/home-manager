@@ -21,9 +21,20 @@
     swift
     vue-language-server
     yaml-language-server
+    elmPackages.elm-language-server
+    elmPackages.elm
     julia
+    meld
+    uv
 
     bun
     lldb
+
+    gdb
+    valgrind
+    radare2
+    iaito
+
+    # claude-code
   ];
 }

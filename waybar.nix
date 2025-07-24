@@ -1,12 +1,20 @@
 { config, pkgs, ... }: {
   programs.waybar = {
+    package = pkgs.emptyDirectory;
     enable = true;
+    systemd.enable = false;
     settings = {
       mainBar = {
         "layer" = "top"; # Waybar at top layer
         "position" = "top"; # Waybar at the bottom of your screen
         "height" = 24; # Waybar height
-        "modules-left" = [ "sway/workspaces" "sway/mode" "mpris" ];
+        "modules-left" = [
+          "sway/workspaces"
+          "sway/mode"
+          "hyprland/workspaces"
+          "hyprland/submap"
+          "mpris"
+        ];
         "modules-center" = [ "sway/window" ];
         "modules-right" = [
           "sway/language"

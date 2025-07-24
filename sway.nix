@@ -1,69 +1,14 @@
 { config, pkgs, ... }: {
-  home.packages = with pkgs; [ sway dmenu wob wdisplays ];
-  programs.swayr = { enable = true; };
-  services.kanshi = {
-    enable = true;
-    settings = [
-      {
-        profile.name = "standalone";
-        profile.outputs = [{
-          criteria = "eDP-1";
-          status = "enable";
-          scale = 1.2;
-          mode = "2256x1504";
-        }];
-      }
-      {
-        profile.name = "work";
-        profile.outputs = [
-          {
-            criteria = "eDP-1";
-            status = "enable";
-            scale = 1.4;
-            mode = "2256x1504";
-            position = "0,0";
-          }
-          {
-            criteria = "Dell Inc. DELL U2518D 3C4YP95TBJ5L";
-            status = "enable";
-            mode = "2560x1440";
-            position = "1613,0";
-          }
-          {
-            criteria = "Dell Inc. DELL U2518D 3C4YP95TBQ5L";
-            status = "enable";
-            mode = "2560x1440";
-            position = "4173,0";
-          }
-        ];
-      }
-      {
-        profile.name = "centaurus";
-        profile.outputs = [
-          {
-            criteria = "eDP-1";
-            status = "enable";
-            scale = 1.2;
-            mode = "2256x1504";
-          }
-          {
-            criteria = "XMD Mi TV 0x00000001";
-            status = "enable";
-            scale = 2.0;
-            mode = "3840x2160";
-          }
-        ];
-      }
-      #   profile lan {
-      #     output 'AOC AG241QG4 0x00000151' enable position 0,0 mode 2560x1440
-      #     output eDP-1 scale 1.2 position 2560,0 mode 2256x1504
-      #   }
-    ];
+  home.packages = let wrapped_wdisplays = config.lib.nixGL.wrap pkgs.wdisplays;
+  in [ pkgs.dmenu pkgs.wob pkgs.wev wrapped_wdisplays ];
 
-  };
+  programs.swayr = { enable = true; };
+
   services.swayidle.enable = true;
   wayland.windowManager.sway = {
     enable = true;
+    package = null;
+    # package = config.lib.nixGL.wrap pkgs.sway;
     config = {
 
       modifier = "Mod4";
@@ -137,29 +82,7 @@
     systemd.enable = false;
     extraConfig = ''
       exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=$nameofcompositor
-      #
-      # ### Variables
-      # #
-      # set $color0 #073642
-      # set $color8 #002b36
-      # set $color1 #dc322f
-      # set $color9 #cb4b16
-      # set $color2 #859900
-      # set $color10 #586e75
-      # set $color3 #b58900
-      # set $color11 #657b83
-      # set $color4 #268bd2
-      # set $color12 #839496
-      # set $color5 #d33682
-      # set $color13 #6c71c4
-      # set $color6 #2aa198
-      # set $color14 #93a1a1
-      # set $color7 #eee8d5
-      # set $color15 #fdf6e3
-      #
-      # set $border_color $color0
-      # set $focused_border_color $color4
-      #
+
       set $mod Mod4
       set $Alt Mod1
       # Home row direction keys, like vim
@@ -477,6 +400,9 @@
       bindsym $mod+o exec "$HOME/.local/bin/randlock"
       #bindsym $mod+o exec "swaylock"
 
+      bindsym XF86AudioPlay exec playerctl play-pause
+      bindsym XF86AudioPrev exec playerctl previous
+      bindsym XF86AudioNext exec playerctl next
       bindsym XF86AudioMute exec "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
       bindsym XF86AudioLowerVolume  exec "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       bindsym XF86AudioRaiseVolume  exec "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
@@ -490,8 +416,10 @@
 
       for_window [class="^.*"] border pixel 1
 
+      for_window [class=".*"] inhibit_idle fullscreen
+      for_window [app_id=".*"] inhibit_idle fullscreen
+
       include /etc/sway/config.d/*
     '';
   };
-  imports = [ ./waybar.nix ];
 }

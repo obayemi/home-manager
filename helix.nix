@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, system, ... }: {
+{ pkgs, ... }: {
   programs.helix = {
     enable = true;
     settings = {
@@ -102,6 +102,11 @@
           name = "nix";
           auto-format = true;
           formatter.command = "${pkgs.nixfmt}/bin/nixfmt";
+        }
+        {
+          name = "python";
+          auto-format = true;
+          formatter.command = "${pkgs.ruff} format";
         }
       ];
     };

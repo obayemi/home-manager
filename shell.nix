@@ -1,4 +1,4 @@
-{ config, pkgs, system, ... }: {
+{ config, pkgs, system, wd, ... }: {
   home.packages = with pkgs; [
     git
     ssh-agents
@@ -23,6 +23,9 @@
     glow
     mdp
 
+    sl
+    gti
+
     # wd.${system}.default
     # wd
     # (pkgs.callPackage (pkgs.fetchFromGitHub {
@@ -35,9 +38,11 @@
 
   home.shell.enableShellIntegration = true;
 
-  home.sessionPath =
-    [ "$HOME/.local/bin" "$HOME/.cargo/bin" "$HOME/.nix-profile/bin" ];
-  home.sessionVariables = { };
+  home.sessionPath = [ "$HOME/.local/bin" "$HOME/.cargo/bin" ];
+  home.sessionVariables = {
+    LIBVIRT_DEFAULT_URI = "qemu:///system";
+    XDG_DATA_DIRS = "$HOME/.nix-profile/share:$XDG_DATA_DIRS";
+  };
 
   home.shellAliases = {
     j = "jj";
@@ -49,11 +54,13 @@
     tree = "ls --tree";
 
     docc = "docker compose";
-    ddj = "docc exec web python manage.py";
+    ddj = "docc exec web uv run python manage.py";
     dmsp = "ddj shell_plus";
     ddsh = "docc exec web";
 
-    vim = "hx";
+    wfo = "wdbin forget";
+
+    # vim = "hx";
   };
 
   programs.bash.enable = true;
@@ -79,7 +86,7 @@
     preferAbbrs = true;
     shellAbbrs = {
       docc = "docker compose";
-      ddj = "docc exec web python manage.py";
+      ddj = "docc exec web uv run python manage.py";
       dmsp = "ddj shell_plus";
       ddsh = "docc exec web";
 
@@ -96,6 +103,10 @@
       mt = "mender-cli terminal";
     };
     interactiveShellInit = ''
+      if not set -q SSH_AUTH_SOCK
+          ssh-agent -c | source >/dev/null
+      end
+
       if not set -q tide_left_prompt_items
         tide configure --auto --style=Rainbow --prompt_colors='16 colors' --show_time=No --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Flat --powerline_prompt_style='One line' --prompt_spacing=Compact --icons='Few icons' --transient=No
       end
@@ -106,10 +117,9 @@
 
       set TTY (tty)
       set -x WLR_DRM_DEVICES '/dev/dri/card1:/dev/dri/card0'
-      if status --is-login && [ "$TTY" = /dev/tty1 ]
-            ssh-agent -c | source > /dev/null
-            exec dbus-launch --sh-syntax --exit-with-session sway &>/tmp/sway.log
-      end
+      # if status --is-login && [ "$TTY" = /dev/tty1 ]
+      #       exec dbus-launch --sh-syntax --exit-with-session sway &>/tmp/sway.log
+      # end
     '';
     functions = {
       wd = ''
@@ -206,6 +216,7 @@
       };
       ui = {
         default-command = "log";
+        merge-editor = [ "meld" "$left" "$base" "$right" "-o" "$output" ];
         editor = "nvim";
       };
       aliases = {
