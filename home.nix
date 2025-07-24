@@ -70,6 +70,7 @@ in {
     ./kanshi.nix
     ./helix.nix
     ./code.nix
+    ./neovim.nix
   ];
 
   qt = {

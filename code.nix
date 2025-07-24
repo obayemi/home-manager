@@ -5,6 +5,7 @@
     taplo
     nil
     ruff
+    basedpyright
     typescript-language-server
     nodePackages.prettier
     marksman
@@ -19,6 +20,7 @@
     tree-sitter-grammars.tree-sitter-svelte
     dprint
     swift
+    lua-language-server
     vue-language-server
     yaml-language-server
     elmPackages.elm-language-server

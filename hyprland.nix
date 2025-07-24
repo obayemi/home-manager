@@ -39,13 +39,14 @@
       exec-once = /usr/libexec/xdg-desktop-portal --verbose -r
       exec-once = mako --default-timeout 5000
       exec-once = wl-paste --watch cliphist store
+      exec-once = earlyoom -n --syslog -r 60
 
       bind = SUPER, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
 
       # exec-once = wl-paste --type text --watch cliphist store # Stores only text data
       # exec-once = wl-paste --type image --watch cliphist store # Stores only image data
       exec-once = kanshi
-      exec-once = hyprdim -d 300
+      # exec-once = hyprdim -d 300
 
       #############################
       ### ENVIRONMENT VARIABLES ###

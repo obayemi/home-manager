@@ -23,8 +23,8 @@
     clipse
 
     (glwrap pkgs.mpv)
-    (glwrap pkgs.qutebrowser)
-    (glwrap pkgs.firefox)
+      # (glwrap pkgs.qutebrowser)
+      # (glwrap pkgs.firefox)
     (glwrap pkgs.surf)
 
     hyprpolkitagent
