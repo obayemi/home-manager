@@ -82,6 +82,9 @@
       comment-nvim
       ts-comments-nvim
 
+      # Formatting
+      conform-nvim
+
       # LSP
       nvim-lspconfig
 
@@ -159,8 +162,31 @@
       })
 
       -- Comment setup
-      require('Comment').setup()
+      require('Comment').setup({
+        padding = true,
+        sticky = true,
+        ignore = '^$',
+        mappings = {
+          basic = false,
+          extra = false,
+        },
+      })
       require('ts-comments').setup()
+
+      -- Custom Ctrl+C commenting keymaps
+      local api = require('Comment.api')
+      
+      -- Ctrl+C to toggle comment for current line in normal mode
+      vim.keymap.set('n', '<C-c>', function()
+        api.toggle.linewise.current()
+      end, { desc = "Toggle comment line" })
+      
+      -- Ctrl+C to toggle comment for selection in visual mode
+      vim.keymap.set('v', '<C-c>', function()
+        local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
+        vim.api.nvim_feedkeys(esc, 'nx', false)
+        api.toggle.linewise(vim.fn.visualmode())
+      end, { desc = "Toggle comment selection" })
 
       -- LSP setup using vim.lsp.config (Neovim 0.11+)
       local capabilities = require('blink.cmp').get_lsp_capabilities()
@@ -183,13 +209,24 @@
         },
       })
 
-      -- vim.lsp.config('ruff', {
-      --   init_options = {
-      --     settings = {
-      --       -- Ruff language server settings go here
-      --     }
-      --   }
-      -- })
+      vim.lsp.config('ruff', {
+        capabilities = capabilities,
+        init_options = {
+          settings = {
+            organizeImports = true,
+            fixAll = true,
+            lint = {
+              enable = true,
+            },
+            format = {
+              enable = true,
+            },
+          }
+        },
+        settings = {
+          args = { "--select", "ALL", "--extend-select", "I" },
+        }
+      })
 
       -- Configure basedpyright for completion only
       vim.lsp.config('basedpyright', {
@@ -201,8 +238,10 @@
             disableOrganizeImports = true,
             
             analysis = {
+              ignorePatterns = { "*.pyi" },
+
               -- Disable most type checking diagnostics
-              typeCheckingMode = "off",
+              typeCheckingMode = "recommended",
               diagnosticMode = "workspace",
               
               -- Disable specific diagnostic categories
@@ -310,7 +349,7 @@
           vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
           vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
           vim.keymap.set('n', '<leader>f', function()
-            vim.lsp.buf.format { async = true }
+            require("conform").format({ lsp_format = "fallback", async = true })
           end, opts)
         end,
       })
@@ -573,25 +612,50 @@
       vim.keymap.set("n", "=p", "<Plug>(YankyPutAfterFilter)")
       vim.keymap.set("n", "=P", "<Plug>(YankyPutBeforeFilter)")
 
-      -- Auto-formatting setup
-      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
-      -- Format on save for LSP clients
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = augroup,
-        callback = function(ev)
-          local client = vim.lsp.get_client_by_id(ev.data.client_id)
-          if client and client.supports_method("textDocument/formatting") then
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              group = augroup,
-              buffer = ev.buf,
-              callback = function()
-                vim.lsp.buf.format({ async = false, bufnr = ev.buf })
-              end,
-            })
-          end
-        end,
+      -- Conform.nvim setup for formatting
+      require('conform').setup({
+        formatters_by_ft = {
+          lua = { "stylua" },
+          python = { "ruff_format", "ruff_organize_imports" },
+          javascript = { "prettierd", "prettier", stop_after_first = true },
+          typescript = { "prettierd", "prettier", stop_after_first = true },
+          typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+          javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+          json = { "prettierd", "prettier", stop_after_first = true },
+          html = { "prettierd", "prettier", stop_after_first = true },
+          css = { "prettierd", "prettier", stop_after_first = true },
+          scss = { "prettierd", "prettier", stop_after_first = true },
+          markdown = { "prettierd", "prettier", stop_after_first = true },
+          yaml = { "prettierd", "prettier", stop_after_first = true },
+          nix = { "nixfmt" },
+          rust = { "rustfmt" },
+          go = { "goimports", "gofmt" },
+          c = { "clang_format" },
+          cpp = { "clang_format" },
+          haskell = { "fourmolu" },
+          sh = { "shfmt" },
+          bash = { "shfmt" },
+          zsh = { "shfmt" },
+        },
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_format = "fallback",
+        },
+        format_after_save = {
+          lsp_format = "fallback",
+        },
+        log_level = vim.log.levels.ERROR,
+        notify_on_error = false,
       })
+
+      -- Format keymap
+      vim.keymap.set({ "n", "v" }, "<leader>mp", function()
+        require("conform").format({
+          lsp_format = "fallback",
+          async = false,
+          timeout_ms = 500,
+        })
+      end, { desc = "Format file or range (in visual mode)" })
     '';
   };
 }
