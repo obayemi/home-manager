@@ -3,7 +3,8 @@
     "allow": [
       "Bash(jj diff:*)",
       "Bash(jj log:*)",
-      "Bash(jj status:*)"
+      "Bash(jj status:*)",
+      "Bash(home-manager build:*)"
     ],
     "deny": []
   }

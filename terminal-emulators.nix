@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
-    gnome-terminal
+    # gnome-terminal  # Temporarily disabled due to libsoup security issues
     terminator
     foot
     # wezterm

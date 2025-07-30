@@ -1,4 +1,8 @@
-{ inputs, config, pkgs, system, ... }: {
+{
+  pkgs,
+  ...
+}:
+{
   home.packages = with pkgs; [
     zig
     zls

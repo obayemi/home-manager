@@ -70,13 +70,13 @@
       todo-comments-nvim
       bufferline-nvim
       lualine-nvim
-      mini-nvim # Includes mini.icons, mini.indentscope, mini.cursorword, mini.hipatterns
+      mini-nvim # Includes mini.icons, mini.indentscope, mini.cursorword, mini.hipatterns, mini.splitjoin, mini.trailspace
       snacks-nvim
 
       # Editing plugins
       vim-surround
       yanky-nvim
-      
+
       # Navigation
       flash-nvim
       outline-nvim
@@ -215,12 +215,12 @@
 
       -- Custom Ctrl+C commenting keymaps
       local api = require('Comment.api')
-      
+
       -- Ctrl+C to toggle comment for current line in normal mode
       vim.keymap.set('n', '<C-c>', function()
         api.toggle.linewise.current()
       end, { desc = "Toggle comment line" })
-      
+
       -- Ctrl+C to toggle comment for selection in visual mode
       vim.keymap.set('v', '<C-c>', function()
         local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
@@ -363,6 +363,9 @@
           documentation = {
             auto_show = true,
             auto_show_delay_ms = 200,
+          },
+          ghost_text = {
+            enabled = true,
           },
         },
         signature = {
@@ -555,7 +558,7 @@
         -- Configure OS-specific icons
         os = {},
       })
-      
+
       -- Set mini.icons as the default icon provider for other plugins
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
@@ -580,6 +583,8 @@
           hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
         },
       })
+      require('mini.splitjoin').setup()
+      require('mini.trailspace').setup()
 
       -- Snacks.nvim setup
       require('snacks').setup({
@@ -678,19 +683,19 @@
       vim.keymap.set({ "n", "x", "o" }, "s", function()
         require("flash").jump()
       end, { desc = "Flash" })
-      
+
       vim.keymap.set({ "n", "x", "o" }, "S", function()
         require("flash").treesitter()
       end, { desc = "Flash Treesitter" })
-      
+
       vim.keymap.set("o", "r", function()
         require("flash").remote()
       end, { desc = "Remote Flash" })
-      
+
       vim.keymap.set({ "o", "x" }, "R", function()
         require("flash").treesitter_search()
       end, { desc = "Treesitter Search" })
-      
+
       vim.keymap.set("c", "<c-s>", function()
         require("flash").toggle()
       end, { desc = "Toggle Flash Search" })

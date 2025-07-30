@@ -1,6 +1,9 @@
-{ inputs, config, pkgs, system, nixgl, ... }:
+{ inputs, config, pkgs, lib, system, nixgl, ... }:
 let inherit (inputs) wd;
 in {
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "nxengine-assets"
+  ];
   home.username = "obayemi";
   home.homeDirectory = "/home/obayemi";
 
