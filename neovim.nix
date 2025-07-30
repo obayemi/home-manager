@@ -23,6 +23,8 @@
       set scrolloff=8
       set signcolumn=yes
       set updatetime=50
+      set clipboard=unnamedplus
+      set cursorline
 
       " Leader key
       let mapleader = " "
@@ -74,6 +76,10 @@
       # Editing plugins
       vim-surround
       yanky-nvim
+      
+      # Navigation
+      flash-nvim
+      outline-nvim
 
       # Color scheme
       dracula-nvim
@@ -107,7 +113,7 @@
       })
       vim.cmd[[colorscheme dracula]]
 
-      -- Nvim-tree setup
+      -- Nvim-tree setup with mini.icons integration
       require('nvim-tree').setup({
         view = {
           width = 30,
@@ -115,9 +121,43 @@
         renderer = {
           icons = {
             show = {
-              file = false,
-              folder = false,
+              file = true,
+              folder = true,
               folder_arrow = true,
+              git = true,
+            },
+            web_devicons = {
+              file = {
+                enable = false,
+              },
+              folder = {
+                enable = false,
+              },
+            },
+            glyphs = {
+              default = "󰈚",
+              symlink = "",
+              bookmark = "󰆤",
+              modified = "●",
+              folder = {
+                arrow_closed = "",
+                arrow_open = "",
+                default = "",
+                open = "",
+                empty = "",
+                empty_open = "",
+                symlink = "",
+                symlink_open = "",
+              },
+              git = {
+                unstaged = "✗",
+                staged = "✓",
+                unmerged = "",
+                renamed = "➜",
+                untracked = "★",
+                deleted = "",
+                ignored = "◌",
+              },
             },
           },
         },
@@ -376,17 +416,11 @@
 
       -- Trouble setup
       require('trouble').setup({
-        icons = false,
+        icons = true,
         fold_open = "v",
         fold_closed = ">",
         indent_lines = false,
-        signs = {
-          error = "error",
-          warning = "warn",
-          hint = "hint",
-          information = "info"
-        },
-        use_diagnostic_signs = false
+        use_diagnostic_signs = true
       })
 
       vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end)
@@ -466,7 +500,11 @@
           always_show_bufferline = false,
           show_buffer_close_icons = false,
           show_close_icon = false,
-          color_icons = false
+          color_icons = true,
+          get_element_icon = function(element)
+            local icon, hl = require('mini.icons').get('file', element.name)
+            return icon, hl
+          end,
         },
         highlights = {
           separator = {
@@ -503,10 +541,31 @@
       vim.keymap.set('n', '<S-h>', '<Cmd>BufferLineCyclePrev<CR>', {})
 
       -- Mini.nvim plugins setup
-      require('mini.icons').setup()
+      require('mini.icons').setup({
+        -- Use mini.icons as the default icon provider
+        default = {},
+        -- Configure file extensions
+        extension = {},
+        -- Configure filenames
+        file = {},
+        -- Configure directories
+        directory = {},
+        -- Configure LSP kind icons
+        lsp = {},
+        -- Configure OS-specific icons
+        os = {},
+      })
+      
+      -- Set mini.icons as the default icon provider for other plugins
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
       require('mini.indentscope').setup({
         symbol = "│",
         options = { try_as_border = true },
+        draw = {
+          delay = 0,
+          animation = require('mini.indentscope').gen_animation.none(),
+        },
       })
       require('mini.cursorword').setup()
       require('mini.hipatterns').setup({
@@ -565,6 +624,191 @@
           },
         },
       })
+
+      -- Flash.nvim setup
+      require('flash').setup({
+        labels = "asdfghjklqwertyuiopzxcvbnm",
+        search = {
+          multi_window = true,
+          forward = true,
+          wrap = true,
+          mode = "exact",
+        },
+        jump = {
+          jumplist = true,
+          pos = "start",
+          history = false,
+          register = false,
+          nohlsearch = false,
+          autojump = false,
+        },
+        label = {
+          uppercase = true,
+          exclude = "",
+          current = true,
+          after = true,
+          before = false,
+          style = "overlay",
+          reuse = "lowercase",
+          distance = true,
+        },
+        highlight = {
+          backdrop = true,
+          matches = true,
+          priority = 5000,
+          groups = {
+            match = "FlashMatch",
+            current = "FlashCurrent",
+            backdrop = "FlashBackdrop",
+            label = "FlashLabel",
+          },
+        },
+        modes = {
+          search = {
+            enabled = true,
+          },
+          char = {
+            enabled = true,
+            jump_labels = false,
+          },
+        },
+      })
+
+      -- Flash keymaps
+      vim.keymap.set({ "n", "x", "o" }, "s", function()
+        require("flash").jump()
+      end, { desc = "Flash" })
+      
+      vim.keymap.set({ "n", "x", "o" }, "S", function()
+        require("flash").treesitter()
+      end, { desc = "Flash Treesitter" })
+      
+      vim.keymap.set("o", "r", function()
+        require("flash").remote()
+      end, { desc = "Remote Flash" })
+      
+      vim.keymap.set({ "o", "x" }, "R", function()
+        require("flash").treesitter_search()
+      end, { desc = "Treesitter Search" })
+      
+      vim.keymap.set("c", "<c-s>", function()
+        require("flash").toggle()
+      end, { desc = "Toggle Flash Search" })
+
+      -- Outline.nvim setup
+      require('outline').setup({
+        outline_window = {
+          position = 'right',
+          width = 25,
+          relative_width = true,
+          auto_close = false,
+          auto_jump = false,
+          jump_highlight_duration = 300,
+          center_on_jump = true,
+          show_numbers = false,
+          show_relative_numbers = false,
+          wrap = false,
+          focus_on_open = false,
+          winhl = "",
+        },
+        outline_items = {
+          show_symbol_details = true,
+          show_symbol_lineno = false,
+          highlight_hovered_item = true,
+          auto_set_cursor = true,
+          auto_update_events = {
+            follow = { 'CursorMoved' },
+            items = { 'InsertLeave', 'WinEnter', 'BufEnter', 'BufWinEnter', 'TabEnter', 'BufWritePost' },
+          },
+        },
+        guides = {
+          enabled = true,
+          markers = {
+            bottom = '└',
+            middle = '├',
+            vertical = '│',
+            horizontal = '─',
+          },
+        },
+        symbol_folding = {
+          autofold_depth = 1,
+          auto_unfold = {
+            hovered = true,
+            only = true,
+          },
+          markers = { "", "" },
+        },
+        preview_window = {
+          auto_preview = false,
+          open_hover_on_preview = false,
+          width = 50,
+          min_width = 50,
+          relative_width = true,
+          border = 'single',
+          winhl = "NormalFloat:",
+          live = false,
+        },
+        keymaps = {
+          show_help = '?',
+          close = { '<Esc>', 'q' },
+          goto_location = '<Cr>',
+          peek_location = 'o',
+          goto_and_close = '<S-Cr>',
+          restore_location = '<C-g>',
+          hover_symbol = '<C-space>',
+          toggle_preview = 'K',
+          rename_symbol = 'r',
+          code_actions = 'a',
+          fold = 'h',
+          unfold = 'l',
+          fold_toggle = '<Tab>',
+          fold_toggle_all = '<S-Tab>',
+          fold_all = 'W',
+          unfold_all = 'E',
+          fold_reset = 'R',
+        },
+        providers = {
+          priority = { 'lsp', 'coc', 'markdown', 'norg' },
+          lsp = {
+            blacklist_clients = {},
+          },
+        },
+        symbols = {
+          icons = {
+            File = { icon = "󰈙", hl = 'Identifier' },
+            Module = { icon = "󰆧", hl = 'Include' },
+            Namespace = { icon = "󰅪", hl = 'Include' },
+            Package = { icon = "󰏗", hl = 'Include' },
+            Class = { icon = "𝓒", hl = 'Type' },
+            Method = { icon = "󰆧", hl = 'Function' },
+            Property = { icon = "󰜢", hl = 'Identifier' },
+            Field = { icon = "󰇽", hl = 'Identifier' },
+            Constructor = { icon = "", hl = 'Special' },
+            Enum = { icon = "ℰ", hl = 'Type' },
+            Interface = { icon = "󰜰", hl = 'Type' },
+            Function = { icon = "󰊕", hl = 'Function' },
+            Variable = { icon = "󰀫", hl = 'Constant' },
+            Constant = { icon = "󰏿", hl = 'Constant' },
+            String = { icon = "𝓐", hl = 'String' },
+            Number = { icon = "#", hl = 'Number' },
+            Boolean = { icon = "⊨", hl = 'Boolean' },
+            Array = { icon = "󰅪", hl = 'Constant' },
+            Object = { icon = "⦿", hl = 'Type' },
+            Key = { icon = "🔐", hl = 'Type' },
+            Null = { icon = "NULL", hl = 'Type' },
+            EnumMember = { icon = "", hl = 'Identifier' },
+            Struct = { icon = "𝓢", hl = 'Structure' },
+            Event = { icon = "🗲", hl = 'Type' },
+            Operator = { icon = "+", hl = 'Identifier' },
+            TypeParameter = { icon = "𝙏", hl = 'Identifier' },
+            Component = { icon = "󰅴", hl = 'Function' },
+            Fragment = { icon = "󰅴", hl = 'Constant' },
+          },
+        },
+      })
+
+      -- Outline keymaps
+      vim.keymap.set('n', '<leader>o', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
 
       -- Yanky setup
       require('yanky').setup({
