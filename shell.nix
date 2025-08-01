@@ -1,4 +1,11 @@
-{ config, pkgs, system, wd, ... }: {
+{
+  config,
+  pkgs,
+  system,
+  wd,
+  ...
+}:
+{
   home.packages = with pkgs; [
     git
     ssh-agents
@@ -26,6 +33,8 @@
     sl
     gti
 
+    rq
+
     # wd.${system}.default
     # wd
     # (pkgs.callPackage (pkgs.fetchFromGitHub {
@@ -38,7 +47,10 @@
 
   home.shell.enableShellIntegration = true;
 
-  home.sessionPath = [ "$HOME/.local/bin" "$HOME/.cargo/bin" ];
+  home.sessionPath = [
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
+  ];
   home.sessionVariables = {
     LIBVIRT_DEFAULT_URI = "qemu:///system";
     XDG_DATA_DIRS = "$HOME/.nix-profile/share:$XDG_DATA_DIRS";
@@ -46,6 +58,7 @@
 
   home.shellAliases = {
     j = "jj";
+    jl = "jj log -T builtin_log_detailed";
     g = "git";
     "..." = "cd ../..";
     ls = "eza";
@@ -59,6 +72,9 @@
     ddsh = "docc exec web";
 
     wfo = "wdbin forget";
+    o = "opencode";
+    c = "claude";
+    cl = "claude";
 
     # vim = "hx";
   };
@@ -94,13 +110,18 @@
       js = "jj status";
       jd = "jj diff";
       jjl = "jj log";
-      jl = "jj l";
+      # jl = "jj l";
+      jl = "jj log -T builtin_log_detailed";
       ls = "eza";
       l = "ls -l";
       ll = "ls -la";
       tree = "ls --tree";
 
       mt = "mender-cli terminal";
+      o = "opencode";
+      c = "claude";
+      cl = "claude";
+
     };
     interactiveShellInit = ''
       if not set -q SSH_AUTH_SOCK
@@ -216,7 +237,14 @@
       };
       ui = {
         default-command = "log";
-        merge-editor = [ "meld" "$left" "$base" "$right" "-o" "$output" ];
+        merge-editor = [
+          "meld"
+          "$left"
+          "$base"
+          "$right"
+          "-o"
+          "$output"
+        ];
         editor = "nvim";
       };
       aliases = {
@@ -224,10 +252,23 @@
         d = [ "diff" ];
         c = [ "commit" ];
         e = [ "edit" ];
-        p = [ "git" "push" ];
-        ps = [ "git" "push" ];
-        f = [ "git" "fetch" ];
-        l = [ "log" "-r" "(dev..@):: | (dev..@)-" ];
+        p = [
+          "git"
+          "push"
+        ];
+        ps = [
+          "git"
+          "push"
+        ];
+        f = [
+          "git"
+          "fetch"
+        ];
+        l = [
+          "log"
+          "-r"
+          "(dev..@):: | (dev..@)-"
+        ];
       };
       git.auto-local-bookmark = true;
       snapshot.max-new-file-size = 2094086;
@@ -251,7 +292,10 @@
     userName = "obayemi";
     userEmail = "obayemi@ikjpz.com";
     delta.enable = true;
-    ignores = [ ".jj" ".env" ];
+    ignores = [
+      ".jj"
+      ".env"
+    ];
     aliases = {
       s = "status";
 
@@ -281,12 +325,10 @@
 
       su = "submodule";
 
-      graph =
-        "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all";
+      graph = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all";
       undo = "reset --hard";
       g = "graph";
-      serve =
-        "!git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git";
+      serve = "!git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git";
       untrack = "rm --cache --";
       appraise = "!git-appraise";
 
@@ -298,7 +340,9 @@
         autoSetupRemote = true;
       };
       pull.ff = "only";
-      core = { editor = "vim"; };
+      core = {
+        editor = "vim";
+      };
       delta = {
         navigate = true;
         line-numbers = true;

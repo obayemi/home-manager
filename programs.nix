@@ -43,14 +43,14 @@
 
       smassh
 
-      nxengine-evo
-      {
-        nixpkgs.config.allowUnfreePredicate =
-          pkg:
-          builtins.elem (lib.getName pkg) [
-            "nxengine-assets"
-          ];
-      }
+      # nxengine-evo
+      # {
+      #   nixpkgs.config.allowUnfreePredicate =
+      #     pkg:
+      #     builtins.elem (lib.getName pkg) [
+      #       "nxengine-assets"
+      #     ];
+      # }
 
       # lens
       #

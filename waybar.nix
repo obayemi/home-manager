@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   programs.waybar = {
     package = pkgs.emptyDirectory;
     enable = true;
@@ -34,7 +35,9 @@
           "all-outputs" = false;
           "format" = "{icon}";
         };
-        "sway/mode" = { "format" = ''<span style="italic">{}</span>''; };
+        "sway/mode" = {
+          "format" = ''<span style="italic">{}</span>'';
+        };
         "idle_inhibitor" = {
           "format" = "{icon}";
           "format-icons" = {
@@ -46,7 +49,9 @@
           # "icon-size" = 21,
           "spacing" = 10;
         };
-        "clock" = { "format-alt" = "{:%Y-%m-%d}"; };
+        "clock" = {
+          "format-alt" = "{:%Y-%m-%d}";
+        };
         "cpu" = {
           "format" = "{usage}% ";
           "on-click" = "kitty glances";
@@ -61,16 +66,21 @@
           "critical-threshold" = 80;
           # "format-critical": "{temperatureC}°C {icon}",
           "format" = "{temperatureC}°C {icon}";
-          "format-icons" = [ "" "" "" ];
+          "format-icons" = [
+            ""
+            ""
+            ""
+          ];
         };
         "backlight" = {
           # "device" = "acpi_video1",
           "format" = "{percent}% {icon}";
-          "format-icons" = [ "" "" ];
-          "on-scroll-up" =
-            "light -T 1.4 && light -G | cut -d'.' -f1 > $SWAYSOCK.wob";
-          "on-scroll-down" =
-            "light -T 0.7 && light -G | cut -d'.' -f1 > $SWAYSOCK.wob";
+          "format-icons" = [
+            ""
+            ""
+          ];
+          "on-scroll-up" = "light -T 1.4 && light -G | cut -d'.' -f1 > $SWAYSOCK.wob";
+          "on-scroll-down" = "light -T 0.7 && light -G | cut -d'.' -f1 > $SWAYSOCK.wob";
         };
         "battery" = {
           "bat" = "BAT1";
@@ -82,14 +92,20 @@
           "format" = "{capacity}% {icon}";
           # "format-good" = "", # An empty format will hide the module
           # "format-full" = "",
-          "format-icons" = [ "" "" "" "" "" ];
+          "format-icons" = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
         };
         "network" = {
           "interface" = "wlp*"; # (Optional) To force the use of this interface
           "format-wifi" = "{essid} ({signalStrength}%) ";
           "format-ethernet" = "{ifname}: {ipaddr}/{cidr} ";
           "format-disconnected" = "Disconnected ⚠";
-          "on-click" = "foot iwctl";
+          "on-click" = "iwgtk";
           "on-click-right" = "iwctl station wlan0 disconnect";
         };
         "pulseaudio" = {
@@ -110,7 +126,11 @@
             "phone" = "";
             "portable" = "";
             "car" = "";
-            "default" = [ "" "" "" ];
+            "default" = [
+              ""
+              ""
+              ""
+            ];
           };
           "on-click" = "pavucontrol";
         };
@@ -118,12 +138,18 @@
           "format" = "{player_icon} {dynamic}";
           "interval" = 1;
           "dynamic-len" = 60;
-          "dynamic-order" = [ "title" "position" "length" ];
+          "dynamic-order" = [
+            "title"
+            "position"
+            "length"
+          ];
           "player-icons" = {
             "default" = "▶";
             "mpv" = "🎵";
           };
-          "status-icons" = { "paused" = "⏸"; };
+          "status-icons" = {
+            "paused" = "⏸";
+          };
         };
         "sway/language" = {
           "format" = "{variant}";

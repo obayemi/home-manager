@@ -1,8 +1,19 @@
-{ config, pkgs, ... }: {
-  home.packages = let wrapped_wdisplays = config.lib.nixGL.wrap pkgs.wdisplays;
-  in [ pkgs.dmenu pkgs.wob pkgs.wev wrapped_wdisplays ];
+{ config, pkgs, ... }:
+{
+  home.packages =
+    let
+      wrapped_wdisplays = config.lib.nixGL.wrap pkgs.wdisplays;
+    in
+    [
+      pkgs.dmenu
+      pkgs.wob
+      pkgs.wev
+      wrapped_wdisplays
+    ];
 
-  programs.swayr = { enable = true; };
+  programs.swayr = {
+    enable = true;
+  };
 
   services.swayidle.enable = true;
   wayland.windowManager.sway = {
@@ -15,11 +26,13 @@
       terminal = "wezterm";
       menu = "fuzzel --show-actions";
 
-      bars = [{ command = "waybar"; }];
+      bars = [ { command = "waybar"; } ];
 
       keybindings = { };
 
-      focus = { followMouse = false; };
+      focus = {
+        followMouse = false;
+      };
       gaps = {
         inner = 3;
         smartBorders = "on";

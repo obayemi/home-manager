@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
@@ -40,6 +41,7 @@
       exec-once = mako --default-timeout 5000
       exec-once = wl-paste --watch cliphist store
       exec-once = earlyoom -n --syslog -r 60
+      exec-once = mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
 
       bind = SUPER, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
 
@@ -335,6 +337,7 @@
       bind = $mainMod, o, exec, hyprrandlock
       bind = $mainMod, F10, exec, hyprwallp
 
+      bind = CTRL & SHIFT, 2, exec, grimshot savecopy active
       bind = CTRL & SHIFT, 3, exec, grimshot savecopy anything
 
 
