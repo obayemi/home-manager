@@ -1,5 +1,5 @@
 { inputs, config, pkgs, lib, system, nixgl, ... }:
-let inherit (inputs) wd;
+let inherit (inputs) wd jj-bump;
 in {
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     "nxengine-assets"
@@ -18,7 +18,10 @@ in {
 
   # flakes are hard :(
   # TODO: find how to put that in ./shell.nix
-  home.packages = [ wd.defaultPackage.${system} ];
+  home.packages = [ 
+    wd.defaultPackage.${system}
+    jj-bump.packages.${system}.default
+  ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.

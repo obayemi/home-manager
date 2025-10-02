@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     wd.url = "github:obayemi/wd";
+    jj-bump.url = "github:obayemi/jj-bump";
     # jsonfmt = { url = "github:shinyzero0/jsonfmt"; };
   };
 
